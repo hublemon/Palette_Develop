@@ -39,6 +39,7 @@ namespace Palette
         private float targetSpeed;
         private float newSpeed;
         private Vector3 newVelocity;
+        private Vector3 attackVelocity;
         private Quaternion targetRotation;
         private Quaternion newRotation;
         private Vector3 gravity;
@@ -116,7 +117,11 @@ namespace Palette
             //Velocity
             bool isOnSlope = IsOnSlope();
             newVelocity = isOnSlope ? AdjustDirectionToSlope(moveInputVectorOriented) * newSpeed : moveInputVectorOriented * newSpeed;
-            newVelocity= playingAttack?Vector3.zero : newVelocity;
+            if (player.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") || (player.animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_A") ||
+                player.animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_B")))
+            {
+                newVelocity = Vector3.zero;
+            }
         }
 
         private void CalculateRoataion()
@@ -136,7 +141,8 @@ namespace Palette
 
         public void OnMove()
         {
-            transform.Translate(newVelocity * Time.deltaTime, Space.World);
+            //Debug.Log(playingAttack);
+            transform.Translate(newVelocity * Time.deltaTime, Space.World); 
             transform.rotation = newRotation;
 
             //Animator
@@ -199,24 +205,27 @@ namespace Palette
         {
             if (skillATime >= skillACool && player.inputs.Attack.PressedDown() && (player.inputs.SkillA.Pressed() || player.inputs.SkillA.PressedDown()))
             {
-                playingAttack = true;
                 skillATime = 0f;
+                isAttacking = false;
                 skillA = true;
+                skillB = false;
             }
 
             else if (skillBTime >= skillBCool && player.inputs.Attack.PressedDown() && (player.inputs.SkillB.Pressed() || player.inputs.SkillB.PressedDown()))
             {
-                playingAttack = true;
                 skillBTime = 0f;
+                isAttacking = false;
+                skillA = false;
                 skillB = true;
-                player.rigidbody.AddForce(5f * Vector3.up, ForceMode.Impulse);
+                //player.rigidbody.AddForce(5f * Vector3.up, ForceMode.Impulse);
             }
 
             else if (attackTime >= attackCool && player.inputs.Attack.PressedDown())
             {
-                playingAttack = true;
-                isAttacking = true;
                 attackTime = 0f;
+                isAttacking = true;
+                skillA = false;
+                skillB = false;
             }
             else
             {
@@ -225,15 +234,9 @@ namespace Palette
                 skillB=false;
             }
 
-            player.animator.SetBool("IsAttacking",isAttacking);
-            player.animator.SetBool("SkillA",skillA);
-            player.animator.SetBool("SkillB",skillB);
-            if (player.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && player.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f)
-                playingAttack = false;
-            else if(player.animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_A") && player.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f)
-                playingAttack=false;
-            else if (player.animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_B") && player.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f)
-                playingAttack = false;
+            player.animator.SetBool("IsAttacking", isAttacking);
+            player.animator.SetBool("SkillA", skillA);
+            player.animator.SetBool("SkillB", skillB);
         }
 
 
@@ -261,12 +264,13 @@ namespace Palette
 
         public void OnDead()
         {
-            player.animator.SetBool("IsDieing", true);
             Debug.Log("플레이어가 죽었다");
+            player.animator.SetBool("IsDieing", true);
         }
 
         void Update()
         {
+            //Debug.Log(player.CurrentHP);
             //Debug.Log(isGrounded);
             CaculateVelocity();
             CalculateRoataion();

@@ -39,7 +39,6 @@ namespace Palette
         private float attackDmg = 0f;
 
         [SerializeField]private Material material;
-        private Material[] materials;
         [SerializeField] private float dieingTime = 3f;
 
         [HideInInspector] public float attaking = 0f;
@@ -62,7 +61,6 @@ namespace Palette
 
             monster.OnUpdateStat(monsterdata.HP, monsterdata.HP);
 
-            materials = new Material[this.transform.childCount];
             initalRotation = transform.rotation;
             localScaleX=transform.localScale.x;
         }

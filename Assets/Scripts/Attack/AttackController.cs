@@ -52,7 +52,7 @@ namespace Palette
             }
             else isSkillA = false;
 
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_A"))
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_B"))
             {
                 isSkillB = true;
                 var effect = SkillBPool.GetAttackEffect();
@@ -79,6 +79,13 @@ namespace Palette
             else if (Physics.Raycast(ray, out hit, 50f, LayerMask.GetMask("Environment")))
             {
                 effect.transform.position = hit.point;
+            }
+            else
+            {
+
+                Vector3 endPoint = ray.GetPoint(50f);
+
+                effect.transform.position = endPoint;
             }
         }
 

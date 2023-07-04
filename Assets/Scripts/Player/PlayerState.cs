@@ -65,7 +65,10 @@ namespace Palette
                     if ( playerController.isAiming)
                         ChangeState(State.AIM);
                     else if (!playerController.isAiming)
+                    {
+                        playerController.OnMove();
                         ChangeState(State.MOVE);
+                    }
                     if (playerController.isDieing)
                     {
                         ChangeState(State.DIE);
