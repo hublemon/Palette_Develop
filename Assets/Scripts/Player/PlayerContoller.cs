@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Palette
 {
@@ -28,6 +29,18 @@ namespace Palette
         [SerializeField] private float attackCool=1.5f;
         [SerializeField] private float skillACool=10f;
         [SerializeField] private float skillBCool=15f;
+
+        [Space]
+        [Header("Aim")]
+        [SerializeField] private Image aim;
+        [SerializeField] Sprite[] aimSprites=new Sprite[3];
+        private RectTransform aimRect;
+
+        [Space]
+        [Header("HP")]
+        [SerializeField] private Image hpBar;
+        [SerializeField] private Image hpBarHead;
+        private RectTransform hpRect;
 
         private CameraController cameraContorller;
 
@@ -78,6 +91,9 @@ namespace Palette
             player.rigidbody.useGravity = true;
             player.animator.applyRootMotion=false;
             player.OnUpdateStat(player.MaxHP, player.MaxHP,player.Attack,player.Armor);
+
+            aimRect = (RectTransform)aim.transform;
+            hpRect = (RectTransform)hpBarHead.transform;
         }
 
         private void OnCollisionStay(Collision collision)
@@ -120,8 +136,12 @@ namespace Palette
             if (player.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") || (player.animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_A") ||
                 player.animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_B")))
             {
-                if(player.animator.GetCurrentAnimatorStateInfo(0).normalizedTime<0.99f)
+                if (player.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.99f)
+                {
                     newVelocity = Vector3.zero;
+                    aim.sprite = aimSprites[2];
+                    aimRect.sizeDelta = new Vector2(75, 75);
+                }
             }
         }
 
@@ -151,11 +171,16 @@ namespace Palette
             {
                 strafeParameter = Mathf.Lerp(0, 1, strafeParameter+4*Time.deltaTime);
                 strafeParameterXZ = Vector3.Lerp(strafeParameterXZ, moveInputVector * newSpeed, moveSharpness * Time.deltaTime);
+                aim.sprite = aimSprites[1];
+                float rectSize = Mathf.Lerp(aimRect.sizeDelta.x, 120, Time.deltaTime);
+                aimRect.sizeDelta = Vector2.one* rectSize;
             }
             else
             {
                 strafeParameter = Mathf.Lerp(0, 1, strafeParameter - 4 * Time.deltaTime);
                 strafeParameterXZ = Vector3.Lerp(strafeParameterXZ, Vector3.forward * newSpeed, moveSharpness * Time.deltaTime);
+                aim.sprite = aimSprites[0];
+                aimRect.sizeDelta = new Vector2(50, 50);
             }
 
             player.animator.SetFloat("Strafing", strafeParameter);
@@ -165,6 +190,8 @@ namespace Palette
 
         public void OnJump()
         {
+            aim.sprite = aimSprites[0];
+            aimRect.sizeDelta = new Vector2(50, 50);
             checkTime += Time.deltaTime;
             if (isGrounded)
                 isFalling = false;
@@ -254,7 +281,11 @@ namespace Palette
             if (player.CurrentHP <= 0)
                 isDieing = true;
             else
-                isDieing=false;
+            {
+                hpBar.fillAmount =Mathf.Lerp(hpBar.fillAmount,(float) player.CurrentHP / player.MaxHP,Time.deltaTime);
+                hpRect.anchoredPosition = new Vector2((-1)*(125-hpBar.fillAmount * 250f), 0);
+                isDieing = false;
+            }
         }
         
         public void OnDamage(float damage)

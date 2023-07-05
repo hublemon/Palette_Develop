@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Palette
 {
@@ -112,7 +113,7 @@ namespace Palette
                         playerController.OnAttack();
                     break;
                 case State.ATTACK:
-                    if(playerController.isAttacking)
+                    if (playerController.isAttacking)
                         playerController.OnAttack();
                     break;
                 case State.DIE:
