@@ -71,12 +71,12 @@ namespace Palette
 
         void Start()
         {
+            isDieing = false;
             player=GetComponent<Player>();  
             cameraContorller=GetComponent<CameraController>();
             player.rigidbody.angularDrag = 999;
             player.rigidbody.useGravity = true;
             player.animator.applyRootMotion=false;
-            player.animator.SetBool("IsDieing", false);
             player.OnUpdateStat(player.MaxHP, player.MaxHP,player.Attack,player.Armor);
         }
 
@@ -120,7 +120,8 @@ namespace Palette
             if (player.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") || (player.animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_A") ||
                 player.animator.GetCurrentAnimatorStateInfo(0).IsName("Skill_B")))
             {
-                newVelocity = Vector3.zero;
+                if(player.animator.GetCurrentAnimatorStateInfo(0).normalizedTime<0.99f)
+                    newVelocity = Vector3.zero;
             }
         }
 
@@ -259,18 +260,17 @@ namespace Palette
         public void OnDamage(float damage)
         {
             player.OnUpdateStat(player.MaxHP, player.CurrentHP - damage, player.Attack, player.Armor);
-            Debug.Log("공격받았다");
+            Debug.Log("공격받았다"+ player.CurrentHP);
         }
 
         public void OnDead()
         {
             Debug.Log("플레이어가 죽었다");
-            player.animator.SetBool("IsDieing", true);
+            player.animator.SetBool("IsDieing", isDieing);
         }
 
         void Update()
         {
-            //Debug.Log(player.CurrentHP);
             //Debug.Log(isGrounded);
             CaculateVelocity();
             CalculateRoataion();

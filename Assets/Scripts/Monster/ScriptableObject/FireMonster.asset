@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: FireMonster
   m_EditorClassIdentifier: 
   hp: 75
-  attackDamage: 15
+  attackDamage: 25
   attackingTime: 5

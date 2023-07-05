@@ -74,6 +74,9 @@ namespace Palette
                         ChangeState(State.DIE);
                     }
                     break;
+                case State.DIE:
+                    UpdateState(currentState);
+                    break;
             }
         }
 

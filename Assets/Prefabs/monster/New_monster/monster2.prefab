@@ -1134,7 +1134,7 @@ PrefabInstance:
     - target: {fileID: 6582080925731276026, guid: 445d039ee9a8ea94f9b2357484f8a9da,
         type: 3}
       propertyPath: CollisionModule.enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6582080925731276026, guid: 445d039ee9a8ea94f9b2357484f8a9da,
         type: 3}
@@ -1169,7 +1169,7 @@ PrefabInstance:
     - target: {fileID: 6582713252133856968, guid: 445d039ee9a8ea94f9b2357484f8a9da,
         type: 3}
       propertyPath: CollisionModule.enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6582713252133856968, guid: 445d039ee9a8ea94f9b2357484f8a9da,
         type: 3}
@@ -1195,13 +1195,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 174671802}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2435307537627392613
+--- !u!1 &6457793922437780982 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6457793922276905548, guid: 445d039ee9a8ea94f9b2357484f8a9da,
+    type: 3}
+  m_PrefabInstance: {fileID: 174671802}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &627513979920742233
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6457103833355694874}
+  m_GameObject: {fileID: 6457793922437780982}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10eec83690739fd49bcf14c69b411928, type: 3}
