@@ -16,7 +16,6 @@ namespace Palette
 
         [Space]
         [Header("SlopCheck")]
-        [SerializeField] private Transform groundCheck;
         [SerializeField] private float maxSlopeAngle=60f;
 
         [Space]
