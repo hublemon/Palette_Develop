@@ -6,7 +6,7 @@ namespace Palette
 {
     public class Monster : MonoBehaviour
     {
-        [Header("Player Stat")]
+        [Header("Monster Stat")]
         [SerializeField] protected float maxHP;
         [SerializeField] protected float currentHP;
         [SerializeField] protected float attack;

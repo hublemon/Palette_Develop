@@ -72,14 +72,33 @@ namespace Palette
             float MouseX = PlayerInputs.MouseXInput;
             float MouseY = PlayerInputs.MouseYInput;
             if (invertX) MouseX *= -1;
-            if (invertY) MouseY *= -1;
             float zoom = PlayerInputs.MouseScrollInput * zoomSpeed;
             Vector3 focusPosition = follow.position + new Vector3(framing.x, framing.y, 0);
             planarDirection=Quaternion.Euler(0,MouseX,0)*planarDirection;
             targetDistance=Mathf.Clamp(targetDistance+zoom,minDistance, maxDistance);   
-            targetVerticalAngle = Mathf.Clamp(targetVerticalAngle + MouseY, minVerticalAngle, maxVerticalAngle);
+            if(!invertY)
+                targetVerticalAngle = Mathf.Clamp(targetVerticalAngle + MouseY, minVerticalAngle, maxVerticalAngle);
+            else
+                targetVerticalAngle = Mathf.Clamp(targetVerticalAngle - MouseY, minVerticalAngle, maxVerticalAngle);
 
             Debug.DrawLine(camera.transform.position, camera.transform.position + planarDirection, Color.red);
+
+            //Handle Obstructions
+            float smallestDistance = targetDistance;
+            RaycastHit[] hits = Physics.SphereCastAll(focusPosition, checkRadius, targetRotation * Vector3.forward, targetDistance, obstructionsLayer);
+
+            if (hits.Length != 0)
+            {
+                foreach (RaycastHit hit in hits)
+                {
+                    if (!ignoreColliders.Contains(hit.collider))
+                    {
+                        if (hit.distance < smallestDistance)
+                            smallestDistance = hit.distance;
+                    }
+                }
+                targetDistance = smallestDistance;
+            }
 
             //Handle Smoothing
             targetRotation = Quaternion.LookRotation(planarDirection) * Quaternion.Euler(targetVerticalAngle, 0, 0);
@@ -87,16 +106,7 @@ namespace Palette
             targetPosition = focusPosition - (targetRotation * Vector3.forward) * targetDistance;
             newPosition=Vector3.Lerp(camera.transform.position,targetPosition, Time.deltaTime * rotationSharpness);
 
-            //Handle Obstructions
-            float smallestDistance = targetDistance;
-            RaycastHit[] hits = Physics.SphereCastAll(focusPosition, checkRadius, targetRotation * Vector3.forward, targetDistance, obstructionsLayer);
-
-            if(hits.Length!=0)
-                foreach(RaycastHit hit in hits) 
-                    if(!ignoreColliders.Contains(hit.collider))
-                        if(hit.distance<smallestDistance)
-                            smallestDistance=hit.distance;  
-
+            
             //Final Taeget
             camera.transform.position= newPosition;
             camera.transform.rotation = newRotation; 
